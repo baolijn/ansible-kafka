@@ -1,0 +1,28 @@
+---
+- name: Copy Kafka-Manager
+  copy: src=kafka-manager-1.3.3.4.zip dest=/opt
+
+- name: Install unzip
+  yum: name=unzip state=present
+
+- name: Extract Kafka-Manager
+  shell: unzip -o /opt/kafka-manager-1.3.3.4.zip -d /opt
+ #unarchive: src=/opt/kafka-manager-1.3.3.4.zip dest=/opt copy=no
+
+- name: Make log dir
+  file: path=/var/log/kafka-logs state=directory
+
+- name: Copy application configuration
+  template: src=app.j2 dest=/opt/kafka-manager-1.3.3.4/conf/application.conf
+
+- name: Kafka-manager init.d script
+  template: src=kafka-manager.j2 dest=/etc/init.d/kafka-manager
+
+- name: Create Kafka-manager links
+  file: src=/opt/kafka-manager-1.3.3.4 dest=/opt/kafka-manager state=link
+
+- name: File permission
+  shell: sudo chmod +x /etc/init.d/kafka-manager
+
+- name: Restart kafka
+  shell: /etc/init.d/kafka-manager start

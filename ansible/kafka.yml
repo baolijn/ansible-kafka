@@ -1,0 +1,9 @@
+- hosts: kafka
+  roles:
+    - common
+    - java
+    - kafka
+
+- hosts: kafka-manager
+  roles:
+    - kafka-manager

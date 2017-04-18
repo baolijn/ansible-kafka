@@ -1,0 +1,3 @@
+---
+zk_hosts: "{{ groups['kafka'] }}"
+zk_client_port: 2181

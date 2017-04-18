@@ -1,0 +1,5 @@
+---
+ntpserver: 192.168.33.201
+interface: 'eth1'
+
+

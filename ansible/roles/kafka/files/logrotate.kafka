@@ -1,0 +1,9 @@
+/var/log/kafka/*.log {
+daily
+rotate 5
+missingok
+dateext
+compress
+notifempty
+copytruncate
+}

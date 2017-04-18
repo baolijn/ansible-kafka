@@ -1,0 +1,11 @@
+[kafka]
+kafkanode01 ansible_host=192.168.33.201
+kafkanode02 ansible_host=192.168.33.202
+kafkanode03 ansible_host=192.168.33.203
+
+[kafka-manager]
+kafkanode01 ansible_host=192.168.33.201
+
+[all:vars]
+ansible_user=root
+ansible_ssh_pass=root

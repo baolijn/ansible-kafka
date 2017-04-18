@@ -1,0 +1,20 @@
+kafka:
+  version: 0.10.2.0
+  scala_version: 2.11
+  data_dir: /data01/kafka
+  install_dir: "/opt"
+
+zk_hosts: "{{ groups['kafka'] }}"
+zk_client_port: 2181
+
+zookeeper:
+  data_dir: /data01/zookeeper
+  tick_time: 2000
+
+cluster_info:
+  kafkanode01:
+    cluster_id: 1
+  kafkanode02:
+    cluster_id: 2
+  kafkanode03:
+    cluster_id: 3

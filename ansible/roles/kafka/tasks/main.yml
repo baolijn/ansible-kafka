@@ -1,0 +1,53 @@
+
+- name: Setting internal variable
+  set_fact:
+    kafka_name: kafka_{{ kafka.scala_version }}-{{ kafka.version }}
+
+- name: Setting internal variable
+  set_fact:
+    kafka_dir: "{{ kafka.install_dir }}/{{ kafka_name }}"
+
+- name: upload kafka package
+  copy: src={{ kafka_name }}.tgz dest=/tmp
+
+- name: Ensure tar is extracted
+  command: tar xzf /tmp/{{ kafka_name }}.tgz chdir="{{ kafka.install_dir }}"
+
+# Config and start Kafka
+- name: Ensures data dir {{ kafka.data_dir }} exists
+  file:
+    path: "{{ kafka.data_dir }}"
+    state: directory
+
+- name: Copy Kafka real config
+  template:
+    src: kafka-properties.j2
+    dest: "{{ kafka_dir }}/config/real-server.properties"
+
+- name: Create Kafka links
+  file: src={{ kafka_dir }} dest=/opt/kafka state=link
+
+- name: Ensure zookeeper conf is present
+  template:
+    src: zookeeper-properties.j2
+    dest: "{{ kafka_dir }}/config/real-zookeeper.properties"
+
+- name: Ensures data dir {{ zookeeper.data_dir }} exists
+  file:
+    path: "{{ zookeeper.data_dir }}"
+    state: directory
+
+- name: Ensure myid is set in {{ zookeeper.data_dir }}/myid
+  template: src=myid dest="{{ zookeeper.data_dir }}/myid"
+
+
+- name: Export the JMX PORT
+  copy: src=kafka-server-start.sh dest=/opt/kafka_{{ kafka.scala_version }}-{{ kafka.version }}/bin/kafka-server-start.sh mode="a+x"
+  
+- include: supervisord.yml
+
+- name: Install logrotate package
+  yum: name=logrotate state=present
+
+- name: Add logrotate config file
+  copy: src=logrotate.kafka dest=/etc/logrotate.d/kafka

@@ -1,0 +1,26 @@
+---
+
+- name: Create the hosts file for all machines
+  template: src=hosts.j2 dest=/etc/hosts
+
+# - name: Install EPEL repository
+#   yum: name=epel-release state=present
+
+# - name: upgrade all packages
+#   yum: name=* state=latest
+
+- name: Install ntp
+  yum: name=ntp state=present
+  tags: ntp
+
+- name: Configure ntp file
+  template: src=ntp.conf.j2 dest=/etc/ntp.conf
+  tags: ntp
+  notify: restart ntp
+
+- name: Start the ntp service
+  service: name=ntpd state=started enabled=yes
+  tags: ntp
+
+- name: add the motd info file
+  copy: src=on_login.sh dest=/etc/profile.d/login-info.sh mode="a+x"
